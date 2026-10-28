@@ -9,8 +9,8 @@
 	],
 	"license": "MIT",
 	"icon": {
-		"74": "logo-64.png",
-		"147": "logo-128.png"
+		"64": "logo-64.png",
+		"128": "logo-128.png"
 	},
 	"environment": "*",
 	"entrypoints": {
@@ -22,6 +22,9 @@
 		],
 		"voicechat": [
 			"com.handicapvoice.HandicapVoicePlugin"
+		],
+		"modmenu": [
+			"com.handicapvoice.client.HandicapVoiceModMenu"
 		]
 	},
 	"depends": {
@@ -30,6 +33,10 @@
 		"java": ">=25",
 		"fabric-api": "*",
 		"handicap": "*",
-		"voicechat": "*"
+		"voicechat": "*",
+		"cloth-config": "*"
+	},
+	"suggests": {
+		"modmenu": "*"
 	}
 }

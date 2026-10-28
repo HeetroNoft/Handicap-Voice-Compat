@@ -26,6 +26,14 @@ repositories {
 		url = "https://maven.maxhenkel.de/repository/public"
 	}
 	maven {
+		name = "Shedaniel"
+		url = "https://maven.shedaniel.me/"
+	}
+	maven {
+		name = "Terraformers"
+		url = "https://maven.terraformersmc.com/"
+	}
+	maven {
 		name = "Modrinth"
 		url = "https://api.modrinth.com/maven"
 		content {
@@ -43,6 +51,10 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	implementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
+		exclude group: "net.fabricmc.fabric-api"
+	}
+	implementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
 	// Compile-only: neither mod is ever bundled into our jar (Handicap is LGPLv3, Simple Voice Chat is All Rights Reserved).
 	compileOnly "de.maxhenkel.voicechat:voicechat-api:${project.voicechat_api_version}"
