@@ -1,0 +1,35 @@
+{
+	"schemaVersion": 1,
+	"id": "handicapvoice",
+	"version": "${version}",
+	"name": "Handicap Voice Compat",
+	"description": "Makes the Mute, Deaf and Partial Deafness handicaps from Handicap affect Simple Voice Chat.",
+	"authors": [
+		"Heet"
+	],
+	"license": "MIT",
+	"icon": {
+		"74": "logo-64.png",
+		"147": "logo-128.png"
+	},
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.handicapvoice.HandicapVoice"
+		],
+		"client": [
+			"com.handicapvoice.client.HandicapVoiceClient"
+		],
+		"voicechat": [
+			"com.handicapvoice.HandicapVoicePlugin"
+		]
+	},
+	"depends": {
+		"fabricloader": "*",
+		"minecraft": "${minecraft_range}",
+		"java": ">=25",
+		"fabric-api": "*",
+		"handicap": "*",
+		"voicechat": "*"
+	}
+}

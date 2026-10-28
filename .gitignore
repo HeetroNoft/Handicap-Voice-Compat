@@ -1,0 +1,14 @@
+.omc
+.SourcesMods
+
+# Gradle / Loom
+.gradle/
+build/
+run/
+out/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+bin/

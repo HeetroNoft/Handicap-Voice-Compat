@@ -1,0 +1,82 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+base {
+	archivesName = "${mod_id}-fabric"
+}
+
+version = "${mod_version}+mc${mc_label}"
+group = 'com.handicapvoice'
+
+loom {
+	splitEnvironmentSourceSets()
+
+	mods {
+		"handicapvoice" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
+}
+
+repositories {
+	maven {
+		name = "Henkel"
+		url = "https://maven.maxhenkel.de/repository/public"
+	}
+	maven {
+		name = "Modrinth"
+		url = "https://api.modrinth.com/maven"
+		content {
+			includeGroup "maven.modrinth"
+		}
+	}
+}
+
+def handicapJar = file(project.handicap_jar)
+if (!handicapJar.exists()) {
+	throw new GradleException("Handicap jar not found at ${handicapJar}. Build Handicap first or set handicap_jar in gradle.properties.")
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	// Compile-only: neither mod is ever bundled into our jar (Handicap is LGPLv3, Simple Voice Chat is All Rights Reserved).
+	compileOnly "de.maxhenkel.voicechat:voicechat-api:${project.voicechat_api_version}"
+	compileOnly files(handicapJar)
+
+	// Dev runtime only (runClient / runServer), never published.
+	localRuntime "maven.modrinth:simple-voice-chat:${project.voicechat_mod_version}"
+	localRuntime files(handicapJar)
+}
+
+processResources {
+	def versionValue = project.version
+	def mcRange = project.fabric_minecraft_range
+	inputs.property "version", versionValue
+	inputs.property "minecraft_range", mcRange
+
+	filesMatching("fabric.mod.json") {
+		expand "version": versionValue, "minecraft_range": mcRange
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+}
+
+java {
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+	from(rootProject.file('LICENSE')) {
+		rename { "${it}_${mod_id}" }
+	}
+}
