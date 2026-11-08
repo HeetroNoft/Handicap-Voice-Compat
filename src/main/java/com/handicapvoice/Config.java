@@ -1,5 +1,10 @@
 package com.handicapvoice;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -26,17 +31,28 @@ public class Config implements ConfigData {
 	@ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
 	public Profile partialDeafness = new Profile(VoiceConfig.DEFAULT_PARTIAL);
 
+	/**
+	 * A 0.0 - 1.0 float shown as a 0 - 100% slider in the config screen (registered client side).
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.FIELD)
+	public @interface Percent {
+	}
+
 	public static class Profile {
 		@Comment("Defines the volume of the voice: 1 = unchanged, 0 = silent.\n Range: 0.0 - 1.0")
 		@ConfigEntry.Gui.Tooltip
+		@Percent
 		public float volume;
 
 		@Comment("Defines how muffled the voice is: 0 = clear, 1 = only a low rumble remains.\n Range: 0.0 - 1.0")
 		@ConfigEntry.Gui.Tooltip
+		@Percent
 		public float muffle;
 
 		@Comment("Defines how garbled the voice is: 0 = clean, 1 = unintelligible.\n Range: 0.0 - 1.0")
 		@ConfigEntry.Gui.Tooltip
+		@Percent
 		public float distortion;
 
 		public Profile() {
