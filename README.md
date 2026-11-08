@@ -115,7 +115,7 @@ Steps:
    ```sh
    ./gradlew :fabric:build
    ```
-2. Point `handicap_jar` in [`gradle.properties`](gradle.properties) to the resulting jar. The default is `.SourcesMods/Handicap-26.1/Handicap-26.1/fabric/build/libs/handicap-fabric-1.4.0+mc26.1.jar`, and `.SourcesMods/` is git-ignored.
+2. Point `handicap_jar` in [`gradle.properties`](gradle.properties) to the resulting jar. The default is `.SourcesMods/handicap-fabric-1.4.0+mc26.1.jar`, and `.SourcesMods/` is git-ignored.
 3. Build this mod:
    ```sh
    ./gradlew build
