@@ -6,7 +6,7 @@
 
 <p align="center">
   Makes the <b>Mute</b>, <b>Deaf</b> and <b>Partial Deafness</b> handicaps from <b>Handicap</b> work in <b>Simple Voice Chat</b>.<br>
-  Fabric · Minecraft 26.1 · MIT
+  Fabric · Minecraft 26.3 · MIT
 </p>
 
 ---
@@ -34,16 +34,16 @@ Put the mod in the `mods/` folder of **both the client and the server**, togethe
 
 | Dependency | |
 |---|---|
-| Minecraft **26.1** + [Fabric Loader](https://fabricmc.net/) | Required |
+| Minecraft **26.3** + [Fabric Loader](https://fabricmc.net/) | Required |
 | Fabric API | Required |
 | Handicap | Required |
 | Simple Voice Chat | Required |
 | Cloth Config API | Required |
 | Mod Menu | Optional, adds the in-game config screen |
 
-Java 25 is required, as for Minecraft 26.1.
+Java 25 is required, as for Minecraft 26.3.
 
-Built against Handicap 1.4.0, Simple Voice Chat 2.6.27 and Cloth Config 26.1.154.
+Built against Handicap 1.5.0, Simple Voice Chat 2.6.27 and Cloth Config 26.3.159.
 
 ## Configuration
 
@@ -115,7 +115,7 @@ Steps:
    ```sh
    ./gradlew :fabric:build
    ```
-2. Point `handicap_jar` in [`gradle.properties`](gradle.properties) to the resulting jar. The default is `.SourcesMods/Handicap-26.1/Handicap-26.1/fabric/build/libs/handicap-fabric-1.4.0+mc26.1.jar`, and `.SourcesMods/` is git-ignored.
+2. Point `handicap_jar` in [`gradle.properties`](gradle.properties) to the resulting jar. The default is `.SourcesMods/handicap-fabric-1.5.0-mc26.3.jar`, and `.SourcesMods/` is git-ignored.
 3. Build this mod:
    ```sh
    ./gradlew build
