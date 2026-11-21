@@ -9,7 +9,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResult;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,17 +29,15 @@ public class HandicapVoice implements ModInitializer {
 
 		Config.register();
 		// Saving from the config screen (singleplayer / LAN host) applies to everyone connected right away.
-		Config.holder().registerSaveListener((holder, config) -> {
-			config.validatePostLoad();
+		Config.config().onChange(() -> {
 			MinecraftServer s = server;
 			if (s != null) {
 				s.execute(() -> s.getPlayerList().getPlayers().forEach(HandicapVoice::sendConfig));
 			}
-			return InteractionResult.PASS;
 		});
 
 		// Re-read the file so edits made while the server was off are picked up.
-		ServerLifecycleEvents.SERVER_STARTING.register(s -> Config.holder().load());
+		ServerLifecycleEvents.SERVER_STARTING.register(s -> Config.config().reload());
 		ServerLifecycleEvents.SERVER_STARTED.register(s -> server = s);
 		ServerLifecycleEvents.SERVER_STOPPED.register(s -> server = null);
 

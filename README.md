@@ -38,12 +38,12 @@ Put the mod in the `mods/` folder of **both the client and the server**, togethe
 | Fabric API | Required |
 | Handicap | Required |
 | Simple Voice Chat | Required |
-| Cloth Config API | Required |
+| [Confee](https://github.com/HeetroNoft/Confee) | Required |
 | Mod Menu | Optional, adds the in-game config screen |
 
 Java 25 is required, as for Minecraft 26.1.
 
-Built against Handicap 1.4.0, Simple Voice Chat 2.6.27 and Cloth Config 26.1.154.
+Built against Handicap 1.4.0, Simple Voice Chat 2.6.27 and Confee 0.2.0.
 
 ## Configuration
 
@@ -58,19 +58,19 @@ The config file is `config/handicapvoice.toml`. It has one section per handicap,
 Default file:
 
 ```toml
-# Alters what a mute player sends in Simple Voice Chat.
+#: Alters what a mute player sends in Simple Voice Chat.
 [mute]
 volume = 0.7
 muffle = 0.9
 distortion = 0.85
 
-# Alters what a deaf player hears in Simple Voice Chat.
+#: Alters what a deaf player hears in Simple Voice Chat.
 [deaf]
 volume = 0.3
 muffle = 0.95
 distortion = 0.2
 
-# Alters what a partially deaf player hears in Simple Voice Chat.
+#: Alters what a partially deaf player hears in Simple Voice Chat.
 [partialDeafness]
 volume = 0.2
 muffle = 0.6
@@ -79,8 +79,8 @@ distortion = 0.0
 
 (The real file also has a comment above every value.)
 
-- A value outside `0.0 - 1.0` is reset to its default, with a warning in the log.
-- A missing key keeps its default. The file is rewritten on startup with every key and comment.
+- A value outside `0.0 - 1.0` is clamped to the nearest bound.
+- A missing key keeps its default. The file is created on first startup with every key and comment. Comments you add by hand are kept.
 - **Dedicated server:** edit the file, then restart the server.
 - **Singleplayer / LAN:** with Mod Menu, open *Mods → Handicap Voice Compat → Configure*. Saving applies the change immediately to every connected player.
 - **On a multiplayer client**, the local file and screen have no effect: the server's values always win.
@@ -108,6 +108,7 @@ Requirements:
 
 - **JDK 25**
 - The **Handicap** jar. Handicap is not published on any Maven repository, so you have to build it yourself.
+- The **Confee** jar. Confee is not public on Modrinth yet, so you have to build it yourself too.
 
 Steps:
 
@@ -116,20 +117,21 @@ Steps:
    ./gradlew :fabric:build
    ```
 2. Point `handicap_jar` in [`gradle.properties`](gradle.properties) to the resulting jar. The default is `.SourcesMods/handicap-fabric-1.4.0+mc26.1.jar`, and `.SourcesMods/` is git-ignored.
-3. Build this mod:
+3. Build Confee from its sources (`./gradlew build`) and point `confee_jar` in [`gradle.properties`](gradle.properties) to the Fabric jar. The default is `.SourcesMods/confee-0.2.0+26.1.2-fabric.jar`.
+4. Build this mod:
    ```sh
    ./gradlew build
    ```
    The mod is `build/libs/handicapvoice-fabric-<version>.jar`. The `-sources.jar` next to it only contains the source code and is not needed to play.
 
-To test in a development game, which already includes Handicap, Simple Voice Chat, Cloth Config and Mod Menu:
+To test in a development game, which already includes Handicap, Simple Voice Chat, Confee and Mod Menu:
 
 ```sh
 ./gradlew runClient
 ./gradlew runServer
 ```
 
-The Simple Voice Chat API comes from `maven.maxhenkel.de`. Handicap and Simple Voice Chat are **compile-only** dependencies: neither is ever bundled into this mod's jar.
+The Simple Voice Chat API comes from `maven.maxhenkel.de`. Confee provides the config file and the config screen. Handicap and Simple Voice Chat are **compile-only** dependencies: neither is ever bundled into this mod's jar.
 
 ### Project layout
 
@@ -138,14 +140,12 @@ src/main/java/com/handicapvoice/
 ├── HandicapVoice.java            mod entrypoint: config loading and syncing to clients
 ├── HandicapVoicePlugin.java      Simple Voice Chat plugin: mic and incoming audio hooks
 ├── VoiceFilter.java              audio filter (distortion, muffle, volume)
-├── Config.java                   AutoConfig definition and validation
-├── CommentedTomlSerializer.java  commented TOML read/write
+├── Config.java                   Confee config definition
 ├── VoiceConfig.java              defaults and the config received from the server
 ├── VoiceProfile.java             volume / muffle / distortion for one handicap
 └── ConfigPayload.java            server → client config packet
 src/client/java/com/handicapvoice/client/
-├── HandicapVoiceClient.java      receives the config packet
-└── HandicapVoiceModMenu.java     Mod Menu config screen
+└── HandicapVoiceClient.java      receives the config packet
 ```
 
 ## Credits
