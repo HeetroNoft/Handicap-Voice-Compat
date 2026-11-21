@@ -11,8 +11,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 public class HandicapVoiceClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		PercentSlider.register();
-
 		ClientPlayNetworking.registerGlobalReceiver(ConfigPayload.TYPE, (payload, context) ->
 			VoiceConfig.setSynced(payload.profiles()));
 

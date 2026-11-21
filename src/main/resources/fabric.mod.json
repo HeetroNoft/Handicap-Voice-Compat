@@ -22,9 +22,6 @@
 		],
 		"voicechat": [
 			"com.handicapvoice.HandicapVoicePlugin"
-		],
-		"modmenu": [
-			"com.handicapvoice.client.HandicapVoiceModMenu"
 		]
 	},
 	"depends": {
@@ -34,7 +31,7 @@
 		"fabric-api": "*",
 		"handicap": "*",
 		"voicechat": "*",
-		"cloth-config": "*"
+		"confee": "*"
 	},
 	"suggests": {
 		"modmenu": "*"
