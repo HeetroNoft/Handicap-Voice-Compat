@@ -26,10 +26,6 @@ repositories {
 		url = "https://maven.maxhenkel.de/repository/public"
 	}
 	maven {
-		name = "Shedaniel"
-		url = "https://maven.shedaniel.me/"
-	}
-	maven {
 		name = "Terraformers"
 		url = "https://maven.terraformersmc.com/"
 	}
@@ -47,13 +43,16 @@ if (!handicapJar.exists()) {
 	throw new GradleException("Handicap jar not found at ${handicapJar}. Build Handicap first or set handicap_jar in gradle.properties.")
 }
 
+def confeeJar = file(project.confee_jar)
+if (!confeeJar.exists()) {
+	throw new GradleException("Confee jar not found at ${confeeJar}. Build Confee first or set confee_jar in gradle.properties.")
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-	implementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
-		exclude group: "net.fabricmc.fabric-api"
-	}
+	implementation files(confeeJar)
 	implementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
 	// Compile-only: neither mod is ever bundled into our jar (Handicap is LGPLv3, Simple Voice Chat is All Rights Reserved).

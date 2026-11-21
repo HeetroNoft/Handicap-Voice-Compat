@@ -1,58 +1,48 @@
 package com.handicapvoice;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.ConfigHolder;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
+import fr.heetstudio.confee.api.Confee;
+import fr.heetstudio.confee.api.ConfeeConfig;
+import fr.heetstudio.confee.api.annotation.Comment;
+import fr.heetstudio.confee.api.annotation.Icon;
+import fr.heetstudio.confee.api.annotation.Range;
+import fr.heetstudio.confee.api.annotation.Section;
+import fr.heetstudio.confee.api.annotation.Slider;
 
 /**
- * Handicap Voice Compat config, registered with AutoConfig (Cloth Config) and stored in config/handicapvoice.toml.
- * The config screen is generated from these fields, the file is written by {@link CommentedTomlSerializer}.
+ * Handicap Voice Compat config, registered with Confee and stored in config/handicapvoice.toml.
+ * Confee writes the file and generates the config screen from these fields.
  * The server's values are sent to every client, so players can't weaken them locally.
  */
-@me.shedaniel.autoconfig.annotation.Config(name = HandicapVoice.MOD_ID)
-public class Config implements ConfigData {
+@fr.heetstudio.confee.api.annotation.Config(modId = HandicapVoice.MOD_ID)
+public class Config {
 
 	@Comment("Alters what a mute player sends in Simple Voice Chat.")
-	@ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+	@Icon("minecraft:goat_horn")
 	public Profile mute = new Profile(VoiceConfig.DEFAULT_MUTE);
 
 	@Comment("Alters what a deaf player hears in Simple Voice Chat.")
-	@ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+	@Icon("minecraft:sculk_sensor")
 	public Profile deaf = new Profile(VoiceConfig.DEFAULT_DEAF);
 
 	@Comment("Alters what a partially deaf player hears in Simple Voice Chat.")
-	@ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+	@Icon("minecraft:amethyst_shard")
 	public Profile partialDeafness = new Profile(VoiceConfig.DEFAULT_PARTIAL);
 
-	/**
-	 * A 0.0 - 1.0 float shown as a 0 - 100% slider in the config screen (registered client side).
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target(ElementType.FIELD)
-	public @interface Percent {
-	}
-
+	@Section
 	public static class Profile {
-		@Comment("Defines the volume of the voice: 1 = unchanged, 0 = silent.\n Range: 0.0 - 1.0")
-		@ConfigEntry.Gui.Tooltip
-		@Percent
+		@Comment("Defines the volume of the voice: 1 = unchanged, 0 = silent.")
+		@Range(min = 0, max = 1)
+		@Slider(step = 0.05)
 		public float volume;
 
-		@Comment("Defines how muffled the voice is: 0 = clear, 1 = only a low rumble remains.\n Range: 0.0 - 1.0")
-		@ConfigEntry.Gui.Tooltip
-		@Percent
+		@Comment("Defines how muffled the voice is: 0 = clear, 1 = only a low rumble remains.")
+		@Range(min = 0, max = 1)
+		@Slider(step = 0.05)
 		public float muffle;
 
-		@Comment("Defines how garbled the voice is: 0 = clean, 1 = unintelligible.\n Range: 0.0 - 1.0")
-		@ConfigEntry.Gui.Tooltip
-		@Percent
+		@Comment("Defines how garbled the voice is: 0 = clean, 1 = unintelligible.")
+		@Range(min = 0, max = 1)
+		@Slider(step = 0.05)
 		public float distortion;
 
 		public Profile() {
@@ -67,61 +57,26 @@ public class Config implements ConfigData {
 		public VoiceProfile toVoiceProfile() {
 			return new VoiceProfile(volume, muffle, distortion);
 		}
-
-		/**
-		 * Values out of range are reset to their default
-		 */
-		void validate(String name, Profile defaults) {
-			volume = checkRange(name + ".volume", volume, defaults.volume);
-			muffle = checkRange(name + ".muffle", muffle, defaults.muffle);
-			distortion = checkRange(name + ".distortion", distortion, defaults.distortion);
-		}
 	}
 
-	private static ConfigHolder<Config> holder;
+	private static ConfeeConfig<Config> config;
 
 	/**
-	 * Loads the file and rewrites it, so missing values and comments are added
+	 * Loads the file (Confee creates it with every key and comment, and clamps values out of range)
 	 */
 	public static void register() {
-		holder = AutoConfig.register(Config.class, CommentedTomlSerializer::new);
-		holder.save();
+		config = Confee.register(Config.class);
 	}
 
-	public static ConfigHolder<Config> holder() {
-		return holder;
+	public static ConfeeConfig<Config> config() {
+		return config;
 	}
 
 	public static Config get() {
-		return holder.getConfig();
+		return config.get();
 	}
 
 	public VoiceConfig.Profiles profiles() {
 		return new VoiceConfig.Profiles(mute.toVoiceProfile(), deaf.toVoiceProfile(), partialDeafness.toVoiceProfile());
-	}
-
-	@Override
-	public void validatePostLoad() {
-		Config defaults = new Config();
-		if (mute == null) {
-			mute = defaults.mute;
-		}
-		if (deaf == null) {
-			deaf = defaults.deaf;
-		}
-		if (partialDeafness == null) {
-			partialDeafness = defaults.partialDeafness;
-		}
-		mute.validate("mute", defaults.mute);
-		deaf.validate("deaf", defaults.deaf);
-		partialDeafness.validate("partialDeafness", defaults.partialDeafness);
-	}
-
-	private static float checkRange(String name, float value, float defaultValue) {
-		if (Float.isNaN(value) || value < 0F || value > 1F) {
-			HandicapVoice.LOGGER.warn("Config value {} = {} is outside 0.0 - 1.0, using the default {}", name, value, defaultValue);
-			return defaultValue;
-		}
-		return value;
 	}
 }
