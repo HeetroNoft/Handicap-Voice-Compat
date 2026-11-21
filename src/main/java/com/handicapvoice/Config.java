@@ -4,9 +4,11 @@ import fr.heetstudio.confee.api.Confee;
 import fr.heetstudio.confee.api.ConfeeConfig;
 import fr.heetstudio.confee.api.annotation.Comment;
 import fr.heetstudio.confee.api.annotation.Icon;
+import fr.heetstudio.confee.api.annotation.Layout;
 import fr.heetstudio.confee.api.annotation.Range;
 import fr.heetstudio.confee.api.annotation.Section;
 import fr.heetstudio.confee.api.annotation.Slider;
+import fr.heetstudio.confee.api.annotation.Theme;
 
 /**
  * Handicap Voice Compat config, registered with Confee and stored in config/handicapvoice.toml.
@@ -14,6 +16,18 @@ import fr.heetstudio.confee.api.annotation.Slider;
  * The server's values are sent to every client, so players can't weaken them locally.
  */
 @fr.heetstudio.confee.api.annotation.Config(modId = HandicapVoice.MOD_ID)
+// Colors of the logo and banner: muted teal panels, warm orange accent, dark outline
+@Theme(
+	accent = 0xFFF39A2E,
+	accentDark = 0xFFC2701A,
+	accentLight = 0xFFF7C66B,
+	panelBg = 0xFF2C3A39,
+	panelBgDeep = 0xFF1F2928,
+	outline = 0xFF191919,
+	titleBarBg = 0xFFA9C9C5,
+	titleBarText = 0xFF191919,
+	toggleOffTrack = 0xFF5E706E)
+@Layout(banner = "handicapvoice:textures/gui/banner.png", bannerHeight = 64)
 public class Config {
 
 	@Comment("Alters what a mute player sends in Simple Voice Chat.")
